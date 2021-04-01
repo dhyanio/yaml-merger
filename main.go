@@ -1,6 +1,6 @@
 package main
 
-// Dhyanio's Simple but powerfull Yaml content merger
+// Dhyanio's Simple but powerful Yaml content merger
 // Written in Beautiful Golang.
 import (
 	"errors"
@@ -51,7 +51,7 @@ func main() {
 	fmt.Println(string(bs))
 }
 
-// Merger func for Yalm merging
+// Merger func for Yaml merging
 func Merge(a, b interface{}) (_ interface{}, err error) {
 	log.Debug().Msgf("merge %v (%T) %v (%T)", a, a, b, b)
 	switch typedA := a.(type) {
