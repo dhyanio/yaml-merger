@@ -1,4 +1,4 @@
-# Dhyanio's YAML Merger
+# YAML Merger
 
 Simple but powerful Yaml content merger written in Beautiful Golang .Useful in Helm charts for kubernetes.
 
