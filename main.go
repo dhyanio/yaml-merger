@@ -1,12 +1,10 @@
 package main
 
-// Dhyanio's Simple but powerful Yaml content merger
-// Written in Beautiful Golang.
+// Simple but Powerful YAML Content Merger
 import (
-	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -14,79 +12,85 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var (
-	ignoreList = pflag.StringSlice("ignore", []string{}, "keys to ignore when merging")
-)
+var ignoreList = pflag.StringSlice("ignore", []string{}, "keys to ignore when merging")
 
-// Init - Before main function
+// Init initializes the logger and parses command-line flags.
 func init() {
 	pflag.Parse()
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		log.Fatal().Msgf("usage: %s <file> [<file>...]", os.Args[0])
+	if len(pflag.Args()) < 1 {
+		log.Fatal().Msgf("Usage: %s <file1.yaml> [<file2.yaml> ...]", os.Args[0])
 	}
-	var res interface{}
-	for _, f := range pflag.Args() {
-		bs, err := ioutil.ReadFile(f)
+
+	var result interface{}
+	for _, file := range pflag.Args() {
+		content, err := os.ReadFile(file)
 		if err != nil {
-			log.Fatal().Err(err).Msg("failed to read file")
+			log.Fatal().Err(err).Msgf("Failed to read file: %s", file)
 		}
-		var part interface{}
-		err = yaml.Unmarshal(bs, &part)
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to parse file")
+
+		var parsedData interface{}
+		if err := yaml.Unmarshal(content, &parsedData); err != nil {
+			log.Fatal().Err(err).Msgf("Failed to parse YAML from file: %s", file)
 		}
-		res, err = Merge(res, part)
+
+		result, err = Merge(result, parsedData)
 		if err != nil {
-			log.Fatal().Err(err).Msg("failed to merge file")
+			log.Fatal().Err(err).Msgf("Failed to merge YAML content from file: %s", file)
 		}
 	}
-	bs, err := yaml.Marshal(res)
+
+	mergedYAML, err := yaml.Marshal(result)
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to marshal result")
+		log.Fatal().Err(err).Msg("Failed to marshal merged result to YAML")
 	}
-	fmt.Println(string(bs))
+
+	// Using strings.Builder to efficiently concatenate the final output
+	var output strings.Builder
+	output.WriteString(string(mergedYAML))
+	fmt.Println(output.String())
 }
 
-// Merger func for Yaml merging
-func Merge(a, b interface{}) (_ interface{}, err error) {
-	log.Debug().Msgf("merge %v (%T) %v (%T)", a, a, b, b)
+// Merge recursively merges two YAML structures.
+func Merge(a, b interface{}) (interface{}, error) {
+	log.Debug().Msgf("Merging: %v (%T) with %v (%T)", a, a, b, b)
 	switch typedA := a.(type) {
 	case []interface{}:
 		typedB, ok := b.([]interface{})
 		if !ok {
-			return nil, errors.New("wrong type on right side")
+			return nil, fmt.Errorf("expected list on right side, got %T", b)
 		}
 		return append(typedA, typedB...), nil
 	case map[interface{}]interface{}:
 		typedB, ok := b.(map[interface{}]interface{})
 		if !ok {
-			return nil, errors.New("wrong type on right side")
+			return nil, fmt.Errorf("expected map on right side, got %T", b)
 		}
 		for key, rightVal := range typedB {
 			if shouldIgnore(key) {
 				continue
 			}
-			leftVal, ok := typedA[key]
-			if !ok {
+			leftVal, found := typedA[key]
+			if !found {
 				typedA[key] = rightVal
 			} else {
-				typedA[key], err = Merge(leftVal, rightVal)
+				mergedVal, err := Merge(leftVal, rightVal)
 				if err != nil {
 					return nil, err
 				}
+				typedA[key] = mergedVal
 			}
 		}
 		return typedA, nil
 	default:
 		return b, nil
 	}
-	return nil, errors.New("unexpected end")
 }
 
+// shouldIgnore checks whether a given key is in the ignore list.
 func shouldIgnore(key interface{}) bool {
 	str, ok := key.(string)
 	if !ok {
