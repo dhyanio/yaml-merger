@@ -12,7 +12,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var ignoreList = pflag.StringSlice("ignore", []string{}, "keys to ignore when merging")
+var (
+	ignoreList = pflag.StringSlice("ignore", []string{}, "keys to ignore when merging")
+	outputFile = pflag.String("output", "", "output file to write the merged YAML (optional)")
+	dryRun     = pflag.Bool("dry-run", false, "perform a dry run, showing what changes would be made without applying them")
+)
 
 // Init initializes the logger and parses command-line flags.
 func init() {
@@ -48,10 +52,25 @@ func main() {
 		log.Fatal().Err(err).Msg("Failed to marshal merged result to YAML")
 	}
 
-	// Using strings.Builder to efficiently concatenate the final output
-	var output strings.Builder
-	output.WriteString(string(mergedYAML))
-	fmt.Println(output.String())
+	if *dryRun {
+		// Dry run: Output the summary and show the changes without applying them
+		fmt.Println("Dry Run: The following merged YAML would be generated (no file changes):")
+		fmt.Println(string(mergedYAML))
+	} else {
+		// Perform actual output to file or stdout
+		if *outputFile != "" {
+			err := os.WriteFile(*outputFile, mergedYAML, 0644)
+			if err != nil {
+				log.Fatal().Err(err).Msgf("Failed to write merged YAML to file: %s", *outputFile)
+			}
+			fmt.Printf("Merged YAML written to %s\n", *outputFile)
+		} else {
+			// Using strings.Builder to efficiently concatenate the final output
+			var output strings.Builder
+			output.WriteString(string(mergedYAML))
+			fmt.Println(output.String())
+		}
+	}
 }
 
 // Merge recursively merges two YAML structures.
