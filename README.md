@@ -7,6 +7,8 @@ A simple yet powerful tool written in Go for merging multiple YAML files. This t
 - **Ignore Keys**: Optionally ignore specific keys during the merge process.
 - **Error Handling**: Clear and descriptive error messages for parsing and merging issues.
 - **Simple CLI Usage**: Specify multiple YAML files to be merged through the command line.
+- **Dry Run**
+- **Output**
 
 ## Installation
 To install the tool, simply use the go install command:
@@ -39,6 +41,19 @@ This will merge the contents of config1.yaml, config2.yaml, and config3.yaml and
 yaml-merger --ignore=key1,key2 file1.yaml file2.yaml
 ```
 This will merge file1.yaml and file2.yaml while ignoring the specified keys.
+
+- --dry-run: Simulates the process without writing to a file. Instead, it prints the merged content.
+```bash
+yaml-merger --dry-run file1.yaml file2.yaml
+```
+
+This will display the merged YAML without saving it to a file.
+
+- --output: Output merged YAML content to the specified file. If not, it prints the output to stdout.
+```bash
+yaml-merger --output result.yaml file1.yaml file2.yaml
+```
+Merge YAML files and write to file (without dry run)
 
 ### Example Files:
 file1.yaml
