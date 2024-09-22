@@ -13,9 +13,10 @@ import (
 )
 
 var (
-	ignoreList = pflag.StringSlice("ignore", []string{}, "keys to ignore when merging")
-	outputFile = pflag.String("output", "", "output file to write the merged YAML (optional)")
-	dryRun     = pflag.Bool("dry-run", false, "perform a dry run, showing what changes would be made without applying them")
+	ignoreList    = pflag.StringSlice("ignore", []string{}, "keys to ignore when merging")
+	outputFile    = pflag.String("output", "", "output file to write the merged YAML (optional)")
+	dryRun        = pflag.Bool("dry-run", false, "perform a dry run, showing what changes would be made without applying them")
+	mergeStrategy = pflag.String("merge-strategy", "merge", "specify merge strategy: 'merge' (deep merge) or 'override' (override conflicting keys)")
 )
 
 // Init initializes the logger and parses command-line flags.
@@ -41,7 +42,7 @@ func main() {
 			log.Fatal().Err(err).Msgf("Failed to parse YAML from file: %s", file)
 		}
 
-		result, err = Merge(result, parsedData)
+		result, err = Merge(result, parsedData, *mergeStrategy)
 		if err != nil {
 			log.Fatal().Err(err).Msgf("Failed to merge YAML content from file: %s", file)
 		}
@@ -73,9 +74,9 @@ func main() {
 	}
 }
 
-// Merge recursively merges two YAML structures.
-func Merge(a, b interface{}) (interface{}, error) {
-	log.Debug().Msgf("Merging: %v (%T) with %v (%T)", a, a, b, b)
+// Merge recursively merges or overrides two YAML structures based on the strategy.
+func Merge(a, b interface{}, strategy string) (interface{}, error) {
+	log.Debug().Msgf("Merging with strategy '%s': %v (%T) with %v (%T)", strategy, a, a, b, b)
 	switch typedA := a.(type) {
 	case []interface{}:
 		typedB, ok := b.([]interface{})
@@ -93,10 +94,10 @@ func Merge(a, b interface{}) (interface{}, error) {
 				continue
 			}
 			leftVal, found := typedA[key]
-			if !found {
+			if !found || strategy == "override" {
 				typedA[key] = rightVal
 			} else {
-				mergedVal, err := Merge(leftVal, rightVal)
+				mergedVal, err := Merge(leftVal, rightVal, strategy)
 				if err != nil {
 					return nil, err
 				}
