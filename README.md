@@ -9,6 +9,7 @@ A simple yet powerful tool written in Go for merging multiple YAML files. This t
 - **Simple CLI Usage**: Specify multiple YAML files to be merged through the command line.
 - **Dry Run**
 - **Output**
+- **merge-strategy**
 
 ## Installation
 To install the tool, simply use the go install command:
@@ -36,24 +37,34 @@ yaml-merger config1.yaml config2.yaml config3.yaml
 This will merge the contents of config1.yaml, config2.yaml, and config3.yaml and output the result to stdout.
 
 ## Options:
-- --ignore: A comma-separated list of keys to ignore during the merge process.
-```bash
-yaml-merger --ignore=key1,key2 file1.yaml file2.yaml
-```
-This will merge file1.yaml and file2.yaml while ignoring the specified keys.
+- `--ignore`: A comma-separated list of keys to ignore during the merge process.
+  ```bash
+  yaml-merger --ignore=key1,key2 file1.yaml file2.yaml
+  ```
+  This will merge file1.yaml and file2.yaml while ignoring the specified keys.
 
-- --dry-run: Simulates the process without writing to a file. Instead, it prints the merged content.
-```bash
-yaml-merger --dry-run file1.yaml file2.yaml
-```
+- `--dry-run`: Simulates the process without writing to a file. Instead, it prints the merged content.
+  ```bash
+  yaml-merger --dry-run file1.yaml file2.yaml
+  ```
+  This will display the merged YAML without saving it to a file.
 
-This will display the merged YAML without saving it to a file.
+- `--merge-strategy`: Output merged YAML content to the specified file. If not, it prints the output to stdout.
+  ```bash
+  yaml-merger --merge-strategy merge file1.yaml file2.yaml
+  ```
+  Deep Merge: Use the default "merge" strategy for recursive merging.
 
-- --output: Output merged YAML content to the specified file. If not, it prints the output to stdout.
-```bash
-yaml-merger --output result.yaml file1.yaml file2.yaml
-```
-Merge YAML files and write to file (without dry run)
+  ```bash
+  yaml-merger --merge-strategy override file1.yaml file2.yaml
+  ```
+  Override: Use the "override" strategy to override values when keys clash.
+
+- `--output`: Output merged YAML content to the specified file. If not, it prints the output to stdout.
+  ```bash
+  yaml-merger --output result.yaml file1.yaml file2.yaml
+  ```
+  Merge YAML files and write to file (without dry run)
 
 ### Example Files:
 file1.yaml
