@@ -6,8 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	"github.com/dhyanio/gogger"
 	"github.com/spf13/pflag"
 	"gopkg.in/yaml.v2"
 )
@@ -22,10 +21,13 @@ var (
 // Init initializes the logger and parses command-line flags.
 func init() {
 	pflag.Parse()
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }
 
 func main() {
+	log, err := gogger.NewLogger("logfile.log", gogger.INFO)
+	if err != nil {
+		panic(err)
+	}
 	if len(pflag.Args()) < 1 {
 		log.Fatal().Msgf("Usage: %s <file1.yaml> [<file2.yaml> ...]", os.Args[0])
 	}
@@ -42,7 +44,7 @@ func main() {
 			log.Fatal().Err(err).Msgf("Failed to parse YAML from file: %s", file)
 		}
 
-		result, err = Merge(result, parsedData, *mergeStrategy)
+		result, err = Merge(result, parsedData, *mergeStrategy, log)
 		if err != nil {
 			log.Fatal().Err(err).Msgf("Failed to merge YAML content from file: %s", file)
 		}
@@ -75,7 +77,7 @@ func main() {
 }
 
 // Merge recursively merges or overrides two YAML structures based on the strategy.
-func Merge(a, b interface{}, strategy string) (interface{}, error) {
+func Merge(a, b interface{}, strategy string, log *gogger.Logger) (interface{}, error) {
 	log.Debug().Msgf("Merging with strategy '%s': %v (%T) with %v (%T)", strategy, a, a, b, b)
 	switch typedA := a.(type) {
 	case []interface{}:
@@ -97,7 +99,7 @@ func Merge(a, b interface{}, strategy string) (interface{}, error) {
 			if !found || strategy == "override" {
 				typedA[key] = rightVal
 			} else {
-				mergedVal, err := Merge(leftVal, rightVal, strategy)
+				mergedVal, err := Merge(leftVal, rightVal, strategy, log)
 				if err != nil {
 					return nil, err
 				}
