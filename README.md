@@ -1,4 +1,4 @@
-# YAML Content Merger
+# YAML File Merger
 
 A simple yet powerful tool written in Go for merging multiple YAML files. This tool allows you to merge complex YAML structures such as lists and maps, with the ability to ignore specific keys during the merge process.
 
