@@ -7,12 +7,12 @@ A simple yet powerful tool written in Go for merging multiple YAML files. This t
 - **Ignore Keys**: Optionally ignore specific keys during the merge process.
 - **Error Handling**: Clear and descriptive error messages for parsing and merging issues.
 - **Simple CLI Usage**: Specify multiple YAML files to be merged through the command line.
-- **Dry Run**
-- **Output**
-- **merge-strategy**
+- **Dry Run**: Simulates the process without writing to a file
+- **Output**: Output merged content to the specified file.
+- **merge-strategy**: Define your merge strategy.
 
 ## Installation
-To install the tool, simply use the go install command:
+To install the tool, use the go install command:
 
 ```bash
 go install github.com/dhyanio/yaml-merger@latest
@@ -96,13 +96,13 @@ app:
   author: "Dhyanio"
 environment: "production"
 features:
-  - "logging"
-  - "monitoring"
+  - "Logging"
+  - "Monitoring"
   - "caching"
   - "alerts"
 ```
 ## Logging
-The tool uses zerolog for structured logging. By default, logs are set to INFO level, but you can enable debug-level logging for detailed output.
+The tool uses https://github.com/dhyanio/gogger for structured logging. Logs are set to INFO by default, but you can enable debug-level logging for detailed output.
 
 ### Enable Debug Logging:
 ```bash
@@ -112,12 +112,12 @@ LOG_LEVEL=debug yaml-merger file1.yaml file2.yaml
 ## Error Handling
 The tool provides detailed error messages in case of:
 
-- File Read Errors: If a file cannot be read, the tool will display an error message.
+- File Read Errors: The tool will display an error message if a file cannot be read.
 - YAML Parse Errors: If there are syntax issues in the YAML files.
 - Type Mismatch: If incompatible types are encountered during merging (e.g., list vs map).
 
 ## Contributing
-
+Contributions are welcome! Please open an issue or submit a pull request on GitHub.
 1. Fork the repository.
 2. Create your feature branch (git checkout -b feature/new-feature).
 3. Commit your changes (git commit -am 'Add new feature').
@@ -125,4 +125,9 @@ The tool provides detailed error messages in case of:
 5. Create a new Pull Request.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+Thanks to the Go community for their support and contributions. ❤️
