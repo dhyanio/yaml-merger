@@ -1,17 +1,23 @@
 # YAML File Merger
 
+![Go Version](https://img.shields.io/badge/go%20version-%3E=1.23-61CFDD.svg?style=flat-square)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+## Use cases
+- [Swagger](./examples/swagger/): Merge multiple swagger files into a swagger file, support JSON/YAML.
+
 A simple yet powerful tool written in Go for merging multiple YAML files. This tool allows you to merge complex YAML structures such as lists and maps, with the ability to ignore specific keys during the merge process.
 
-## Features
-- **Recursive Merging**: Merges complex YAML structures including lists and maps.
-- **Ignore Keys**: Optionally ignore specific keys during the merge process.
-- **Error Handling**: Clear and descriptive error messages for parsing and merging issues.
-- **Simple CLI Usage**: Specify multiple YAML files to be merged through the command line.
-- **Dry Run**: Simulates the process without writing to a file
+## 🔧 Features
+- **Recursive Merging**: Handles nested structures, including lists and maps.
+- **Ignore Keys**: Optionally exclude specific keys from merging.
+- **Error-Resilient**: Provides clear error messages for parsing and merging issues.
+- **Simple CLI Usage**: Merge files directly from the command line.
+- **Dry Run**: Preview merged content without saving.
 - **Output**: Output merged content to the specified file.
-- **merge-strategy**: Define your merge strategy.
+- **Custom Merge Strategies**: Choose between merge (deep merge) and override for key conflicts.
 
-## Installation
+## 🚀 Installation
 To install the tool, use the go install command:
 
 ```bash
@@ -22,15 +28,14 @@ This will install the yaml-merger binary, which you can run from your terminal.
 ## Prerequisites
 Go 1.16+ is required for the go install command.
 
-## Usage
+## 📚 Usage
 After installing the tool, you can run it from the command line:
 
 ```bash
 yaml-merger [options] <file1.yaml> <file2.yaml> [...]
 ```
 
-
-## Example:
+## 🔍 Example:
 ```bash
 yaml-merger config1.yaml config2.yaml config3.yaml
 ```
@@ -69,7 +74,6 @@ This will merge the contents of config1.yaml, config2.yaml, and config3.yaml and
 ### Example Files:
 file1.yaml
 ```yaml
-Copy code
 app:
   name: "MyApp"
   version: "1.0"
@@ -101,7 +105,7 @@ features:
   - "caching"
   - "alerts"
 ```
-## Logging
+## 🛠 Logging
 The tool uses https://github.com/dhyanio/gogger for structured logging. Logs are set to INFO by default, but you can enable debug-level logging for detailed output.
 
 ### Enable Debug Logging:
@@ -109,14 +113,14 @@ The tool uses https://github.com/dhyanio/gogger for structured logging. Logs are
 LOG_LEVEL=debug yaml-merger file1.yaml file2.yaml
 ```
 
-## Error Handling
+##❗Error Handling
 The tool provides detailed error messages in case of:
 
 - File Read Errors: The tool will display an error message if a file cannot be read.
 - YAML Parse Errors: If there are syntax issues in the YAML files.
 - Type Mismatch: If incompatible types are encountered during merging (e.g., list vs map).
 
-## Contributing
+## 🤝 Contributing
 Contributions are welcome! Please open an issue or submit a pull request on GitHub.
 1. Fork the repository.
 2. Create your feature branch (git checkout -b feature/new-feature).
@@ -124,10 +128,10 @@ Contributions are welcome! Please open an issue or submit a pull request on GitH
 4. Push to the branch (git push origin feature/new-feature).
 5. Create a new Pull Request.
 
-## License
+## 📜 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Acknowledgements
+## ❤️ Acknowledgements
 
-Thanks to the Go community for their support and contributions. ❤️
+Thanks to the Go community for their support and contributions.
