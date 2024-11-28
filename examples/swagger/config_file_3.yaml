@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: Sample API 3
+  version: 3.0.0
+paths:
+  /api/v3/resource3:
+    put:
+      summary: Update Resource 3
+      requestBody:
+        description: Resource 3 object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource3'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource3'
+components:
+  schemas:
+    Resource3:
+      type: object
+      properties:
+        id:
+          type: string
+        details:
+          type: string
