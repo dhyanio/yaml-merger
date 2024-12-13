@@ -1,12 +1,53 @@
-# YAML File Merger
+<img src="./doc/yaml-merger.png" alt="yaml-merger" width="300"/>
 
+[![tests](https://github.com/dhyanio/yaml-merger/actions/workflows/test.yaml/badge.svg)](https://github.com/dhyanio/yaml-merger/actions/workflows/test.yaml)
+[![linter](https://github.com/dhyanio/yaml-merger/actions/workflows/linter.yaml/badge.svg)](https://github.com/dhyanio/yaml-merger/actions/workflows/linter.yaml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dhyanio/yaml-merger)](https://goreportcard.com/report/github.com/dhyanio/yaml-merger)
 ![Go Version](https://img.shields.io/badge/go%20version-%3E=1.23-61CFDD.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
+A simple yet powerful tool written in Go for merging multiple YAML files. This tool allows you to merge complex YAML structures such as lists and maps, with the ability to ignore specific keys during the merge process.
+
+# Table of Contents
+- [Installation](#installation)
+- [Cli](#cli)
+
+### 🚀 Installation
+
+#### yaml-merger
+
+**From releases**
+This installs binary.
+
+* Linux
+```
+curl -LO "https://github.com/dhyanio/yaml-merger/releases/download/$(curl -s https://api.github.com/repos/dhyanio/yaml-merger/releases/latest | grep tag_name | cut -d '"' -f 4)/yaml-merger-linux-amd64"
+chmod +x yaml-merger-linux-amd64
+sudo mv yaml-merger-linux-amd64 /usr/local/bin/yaml-merger
+```
+* MacOS
+```
+curl -LO "https://github.com/dhyanio/yaml-merger/releases/download/$(curl -s https://api.github.com/repos/dhyanio/discache/releases/latest | grep tag_name | cut -d '"' -f 4)/yaml-merger-darwin-amd64"
+chmod +x yaml-merger-darwin-amd64
+sudo mv yaml-merger-darwin-amd64 /usr/local/bin/yaml-merger
+```
+
+**From source**
+1.  Run `git clone <yaml-merger repo> && cd yaml-merger/`
+2.  Run `make build`
+
+**Go install the tool, use the go install command:**
+
+```bash
+go install github.com/dhyanio/yaml-merger@latest
+```
+This will install the yaml-merger binary, which you can run from your terminal.
+
+## CLI
+A CLI tool has commands
+
 ## Use cases
 - [Swagger](./examples/swagger/): Merge multiple swagger files into a swagger file, support JSON/YAML.
-
-A simple yet powerful tool written in Go for merging multiple YAML files. This tool allows you to merge complex YAML structures such as lists and maps, with the ability to ignore specific keys during the merge process.
 
 ## 🔧 Features
 - **Recursive Merging**: Handles nested structures, including lists and maps.
@@ -16,17 +57,6 @@ A simple yet powerful tool written in Go for merging multiple YAML files. This t
 - **Dry Run**: Preview merged content without saving.
 - **Output**: Output merged content to the specified file.
 - **Custom Merge Strategies**: Choose between merge (deep merge) and override for key conflicts.
-
-## 🚀 Installation
-To install the tool, use the go install command:
-
-```bash
-go install github.com/dhyanio/yaml-merger@latest
-```
-This will install the yaml-merger binary, which you can run from your terminal.
-
-## Prerequisites
-Go 1.16+ is required for the go install command.
 
 ## 📚 Usage
 After installing the tool, you can run it from the command line:
@@ -113,7 +143,7 @@ The tool uses https://github.com/dhyanio/gogger for structured logging. Logs are
 LOG_LEVEL=debug yaml-merger file1.yaml file2.yaml
 ```
 
-##❗Error Handling
+## ❗Error Handling
 The tool provides detailed error messages in case of:
 
 - File Read Errors: The tool will display an error message if a file cannot be read.

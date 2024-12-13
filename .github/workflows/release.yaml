@@ -1,0 +1,37 @@
+name: "tagged-release"
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Bump Version
+        required: true
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Test
+        run: go build -v && go test ./...
+      - name: Build for linux/amd64
+        run: go build -o yaml-merger-linux-amd64
+      - name: Build for linux/arm64
+        run: GOOS=linux GOARCH=arm64 go build -o yaml-merger-linux-arm64
+      - name: Build for mac
+        run: GOOS=darwin go build -o yaml-merger-darwin-amd64
+      - name: Build for mac Apple Silicon
+        run: GOOS=darwin GOARCH=arm64 go build -o yaml-merger-darwin-arm64
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ github.event.inputs.version }}
+          prerelease: false
+          files: |
+            yaml-merger-*
